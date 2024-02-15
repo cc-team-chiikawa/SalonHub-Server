@@ -5,7 +5,7 @@
 exports.up = function (knex) {
   return knex.schema.createTable("genres", function (table) {
     table.increments("id").primary();
-    table.string("genreName", 1000).notNullable();
+    table.string("name", 1000).notNullable();
   });
 };
 

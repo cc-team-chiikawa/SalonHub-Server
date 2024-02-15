@@ -7,54 +7,53 @@ exports.seed = async function (knex) {
   await knex("menus").del();
   await knex("menus").insert([
     {
-      menuName: "カット",
-      menuOverview:
+      name: "カット",
+      overview:
         "シャンプー・ブロー込みの価格となっております。ロング料金有り。",
     },
     {
-      menuName: "カラー＋カット",
-      menuOverview:
+      name: "カラー＋カット",
+      overview:
         "シャンプー・ブロー込みの価格となっております。ロング料金有り。",
     },
     {
-      menuName: "カット+インナーカラー",
-      menuOverview:
+      name: "カット+インナーカラー",
+      overview:
         "シャンプー・ブロー込みの価格となっております。ロング料金有り。※ブリーチ1回",
     },
     {
-      menuName: "カット+ハイトーンカラー",
-      menuOverview:
+      name: "カット+ハイトーンカラー",
+      overview:
         "シャンプー・ブロー込みの価格となっております。ロング料金有り。※ケアブリーチ1回",
     },
     {
-      menuName: "パーマ＋カット",
-      menuOverview:
+      name: "パーマ＋カット",
+      overview:
         "シャンプー・ブロー込みの価格となっております。ロング料金はなし。",
     },
     {
-      menuName: "パーマ＋カット＋トリートメント",
-      menuOverview:
+      name: "パーマ＋カット＋トリートメント",
+      overview:
         "シャンプー・ブロー込みの価格となっております。ロング料金はなし。",
     },
     {
-      menuName: "縮毛矯正(ハイストレート)＋カット",
-      menuOverview:
+      name: "縮毛矯正(ハイストレート)＋カット",
+      overview:
         "シャンプー・ブロー込みの価格となっております。ロング料金有り。",
     },
     {
-      menuName: "ヘッドスパ(30分)＋カット",
-      menuOverview:
+      name: "ヘッドスパ(30分)＋カット",
+      overview:
         "シャンプー・ブロー込みの価格となっております。ロング料金有り。",
     },
     {
-      menuName: "眉カット",
-      menuOverview:
+      name: "眉カット",
+      overview:
         "眉でイメージ変わります。形や細さ、なりたいイメージなどなんでもご相談ください。ほかのメニューとセットも可能。",
     },
     {
-      menuName: "小さなお子様カット（0～3歳のお子様）",
-      menuOverview:
-        "髪の量などによって料金が変わります。施術時間は約30分です。",
+      name: "小さなお子様カット（0～3歳のお子様）",
+      overview: "髪の量などによって料金が変わります。施術時間は約30分です。",
     },
   ]);
 };

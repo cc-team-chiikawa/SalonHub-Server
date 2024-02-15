@@ -10,12 +10,12 @@ exports.up = function (knex) {
       .inTable("menus")
       .onDelete("CASCADE");
     table
-      .integer("carteId")
+      .integer("karteId")
       .references("id")
-      .inTable("cartes")
+      .inTable("kartes")
       .onDelete("CASCADE");
     // 複合主キーを設定する
-    table.primary(["menuId", "carteId"]);
+    table.primary(["menuId", "karteId"]);
   });
 };
 

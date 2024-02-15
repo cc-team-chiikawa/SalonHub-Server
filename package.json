@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test",
+    "test": "mocha test --exit",
     "dev": "nodemon index.js",
     "db:migrate": "knex migrate:latest",
     "db:seed": "knex seed:run"

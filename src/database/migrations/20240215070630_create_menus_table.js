@@ -5,8 +5,8 @@
 exports.up = function (knex) {
   return knex.schema.createTable("menus", function (table) {
     table.increments("id").primary();
-    table.string("menuName", 1000).notNullable();
-    table.string("menuOverview", 1000).notNullable();
+    table.string("name", 1000).notNullable();
+    table.string("overview", 1000).notNullable();
   });
 };
 
