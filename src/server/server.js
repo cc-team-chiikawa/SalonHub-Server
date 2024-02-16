@@ -25,9 +25,13 @@ const createserver = () => {
   app.post("/api/customers", async (req, res) => {
     const postCustomer = req.body;
     try {
-      const newCustomer = await db("customers").insert(postCustomer);
+      const newCustomer = await db("customers")
+        .insert(postCustomer)
+        // 挿入された行のデータを返す
+        .returning("*");
       res.status(201).json(newCustomer[0]);
-    } catch {
+    } catch (error) {
+      console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
