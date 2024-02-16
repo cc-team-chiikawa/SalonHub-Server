@@ -15,5 +15,14 @@ exports.seed = async function (knex) {
       joinedDate: "2020-02-15",
       photo: null,
     },
+    {
+      stylistType: 0,
+      loginId: "田中陽平",
+      name: "田中陽平",
+      kana: "たなかようへい",
+      post: "店長",
+      joinedDate: "2015-01-01",
+      photo: null,
+    },
   ]);
 };

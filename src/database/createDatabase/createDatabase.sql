@@ -1,1 +1,1 @@
-CREATE DATABASE snack;
+CREATE DATABASE salonhub;

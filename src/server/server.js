@@ -2,11 +2,6 @@ const express = require("express");
 const path = require("path");
 const db = require("../database/knex");
 
-const testCustomers = [
-  { id: 1, name: "田中陽平" },
-  { id: 2, name: "高橋朱美" },
-];
-
 const camelToSnake = (str) => {
   return str.replace(/[A-Z]/g, (match) => `_${match.toLowerCase()}`);
 };
@@ -14,11 +9,6 @@ const camelToSnake = (str) => {
 const createserver = () => {
   const app = express();
   app.use(express.json());
-
-  app.get("/api/customers", async (req, res) => {
-    // const result = await db.select().from("customers");
-    res.status(200).json(testCustomers);
-  });
 
   // 「/api/customers」
   // POST：顧客情報を追加する

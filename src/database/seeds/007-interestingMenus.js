@@ -8,5 +8,7 @@ exports.seed = async function (knex) {
   await knex("interestingMenus").insert([
     { menuId: 8, karteId: 1 },
     { menuId: 9, karteId: 1 },
+    { menuId: 3, karteId: 2 },
+    { menuId: 4, karteId: 3 },
   ]);
 };

@@ -1,1 +1,1 @@
-CREATE DATABASE test_snack;
+CREATE DATABASE test_salonhub;

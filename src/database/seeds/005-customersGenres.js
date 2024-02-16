@@ -9,5 +9,8 @@ exports.seed = async function (knex) {
     { customerId: 1, genreId: 1 },
     { customerId: 1, genreId: 6 },
     { customerId: 1, genreId: 8 },
+    { customerId: 2, genreId: 2 },
+    { customerId: 2, genreId: 4 },
+    { customerId: 3, genreId: 5 },
   ]);
 };
