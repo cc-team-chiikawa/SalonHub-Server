@@ -25,10 +25,7 @@ const createserver = () => {
   app.post("/api/customers", async (req, res) => {
     const postCustomer = req.body;
     try {
-      const newCustomer = await db("customers")
-        .insert(postCustomer)
-        // 挿入された行のデータを返す
-        .returning("*");
+      const newCustomer = await db("customers").insert(postCustomer);
       res.status(201).json(newCustomer[0]);
     } catch {
       res.status(500).json({ error: "Internal Server Error" });
@@ -45,46 +42,34 @@ const createserver = () => {
         .select("*")
         .from("customers")
         .where({ id: customerId });
-      console.log("customerInfo:", customerInfo);
 
       // スネークケースに変更
-      const snakeCaseCustomerInfo = customerInfo.map((customer) => {
-        // スネークケース変換後のobjectを入れるためのnewCustomerを準備
-        const newCustomer = {};
-        for (const key in customer) {
-          if (Object.prototype.hasOwnProperty.call(customer, key)) {
-            newCustomer[camelToSnake(key)] = customer[key];
-          }
+      const snakeCaseCustomerInfo = {};
+      for (const key in customerInfo[0]) {
+        if (Object.prototype.hasOwnProperty.call(customerInfo[0], key)) {
+          snakeCaseCustomerInfo[camelToSnake(key)] = customerInfo[0][key];
         }
-        return newCustomer;
-      });
+      }
 
       // kartesテーブルからの取得
       const kartesInfo = await db
-        .select("id as kartes_id", "treatmentDay as treatment_day")
+        .select("id", "treatmentDay as treatment_day")
         .from("kartes")
         .where({ customerId });
-      console.log("kartesInfo:", kartesInfo);
 
       // genresテーブルからの取得
       const genresInfo = await db
-        .select("genres.name as genre_name")
+        .select("genres.id", "genres.name")
         .from("genres")
         .innerJoin("customersGenres", "genres.id", "customersGenres.genreId")
         .innerJoin("customers", "customersGenres.customerId", "customers.id")
         .where("customers.id", customerId);
-      console.log("genresInfo:", genresInfo);
 
-      const responseObject = [
-        { ...snakeCaseCustomerInfo[0] },
-        { ...kartesInfo },
-        { ...genresInfo },
-      ];
-      // const responseObject = {
-      //   customer: snakeCaseCustomerInfo[0],
-      //   kartes: kartesInfo.length > 0 ? kartesInfo : [],
-      //   genres: genresInfo.length > 0 ? genresInfo : [],
-      // };
+      const responseObject = {
+        ...snakeCaseCustomerInfo,
+        kartes: kartesInfo,
+        genres: genresInfo,
+      };
 
       res.status(200).json(responseObject);
     } catch {
@@ -98,7 +83,7 @@ const createserver = () => {
     const updatedData = req.body;
 
     try {
-      const updatedResult = await db("customers")
+      const updateResult = await db("customers")
         .where({ id: customerId })
         .update(updatedData);
 
@@ -114,13 +99,37 @@ const createserver = () => {
     }
   });
 
+  // DELETE：顧客idに一致する顧客情報を削除
+  app.delete("/api/customers/:id", async (req, res) => {
+    const customerId = req.params.id;
+    try {
+      // 削除対象が見つかったか判断するため、カウントする
+      const delCount = await db("customers").where({ id: customerId }).delete();
+
+      if (delCount > 0) {
+        // カウントできているため、成功を返す
+        res
+          .status(200)
+          .json({ success: true, message: "request successfull!!" });
+      } else {
+        // カウントできていないため、削除対象なし
+        res.status(404).json({ success: false, message: "Item not found" });
+      }
+    } catch {
+      res.status(500).json({ error: "request failed" });
+    }
+  });
+
   // 「/api/customers/login」
   // POST：リクエストボディで指定したカード番号、生年月日に一致する顧客のidを返す
   app.post("/api/customers/login", async (req, res) => {
     const serchInfo = req.body;
 
     try {
-      const customerID = await db("customers").select("id").where(serchInfo);
+      const customerID = await db("customers")
+        .select("id")
+        .where(serchInfo)
+        .first();
 
       if (customerID) {
         // 見つかった場合のみidを返す
