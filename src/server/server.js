@@ -127,7 +127,7 @@ const createserver = () => {
 
       if (customerID) {
         // 見つかった場合のみidを返す
-        res.status(200).json({ customerID });
+        res.status(200).json(customerID);
       } else {
         // 見つからなかった場合
         res.status(404).json({ error: "Customer not found" });
@@ -160,18 +160,39 @@ const createserver = () => {
       const karteInfo = await db
         .select("*")
         .from("kartes")
-        .where({ id: karteId });
-      const snakeCasekarteInfo = karteInfo.map((karte) => {
-        // スネークケース変換後のobjectを入れるためのnewCustomerを準備
-        const newkarte = {};
-        for (const key in karte) {
-          if (Object.prototype.hasOwnProperty.call(karte, key)) {
-            newkarte[camelToSnake(key)] = karte[key];
-          }
+        .where({ id: karteId })
+        .first();
+
+      const snakeCasekarteInfo = {};
+      for (const key in karteInfo) {
+        if (Object.prototype.hasOwnProperty.call(karteInfo, key)) {
+          snakeCasekarteInfo[camelToSnake(key)] = karteInfo[key];
         }
-        return newkarte;
-      });
-      res.status(200).json(snakeCasekarteInfo);
+      }
+
+      // treatmentedMenusの取得
+      const treatmentedInfo = await db
+        .select("menus.name")
+        .from("menus")
+        .innerJoin("treatmentedMenus", "menus.id", "treatmentedMenus.menuId")
+        .innerJoin("kartes", "treatmentedMenus.karteId", "kartes.id")
+        .where("kartes.id", karteId);
+
+      // treatmentedMenusの取得
+      const interestingInfo = await db
+        .select("menus.name")
+        .from("menus")
+        .innerJoin("interestingMenus", "menus.id", "interestingMenus.menuId")
+        .innerJoin("kartes", "interestingMenus.karteId", "kartes.id")
+        .where("kartes.id", karteId);
+
+      const responseObject = {
+        ...snakeCasekarteInfo,
+        treatmented: treatmentedInfo,
+        interesting: interestingInfo,
+      };
+
+      res.status(200).json(responseObject);
     } catch {
       res.status(500).json({ error: "request failed" });
     }
