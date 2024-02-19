@@ -172,7 +172,7 @@ const createserver = () => {
 
       // treatmentedMenusの取得
       const treatmentedInfo = await db
-        .select("menus.name")
+        .select("menus.id", "menus.name")
         .from("menus")
         .innerJoin("treatmentedMenus", "menus.id", "treatmentedMenus.menuId")
         .innerJoin("kartes", "treatmentedMenus.karteId", "kartes.id")
@@ -180,7 +180,7 @@ const createserver = () => {
 
       // treatmentedMenusの取得
       const interestingInfo = await db
-        .select("menus.name")
+        .select("menus.id", "menus.name")
         .from("menus")
         .innerJoin("interestingMenus", "menus.id", "interestingMenus.menuId")
         .innerJoin("kartes", "interestingMenus.karteId", "kartes.id")
