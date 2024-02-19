@@ -20,11 +20,13 @@ before(async () => {
   await knex.migrate.latest();
   // シード実行
   await knex.seed.run();
+  console.log("Before pass");
 });
 
 after(async () => {
   // テスト後にロールバック
   await knex.migrate.rollback();
+  console.log("After pass");
 });
 
 // TODO: 時間があれば
@@ -33,7 +35,7 @@ describe("serverのテスト", () => {
   beforeEach(async () => {
     const randomCardNumber = generateRandomCardNumber();
     await knex("customers").where({ cardNumber: randomCardNumber }).del();
-    console.log("Database cleaned up");
+    // console.log("Database cleaned up");
     request = chai.request(server);
   });
 
@@ -128,11 +130,7 @@ describe("serverのテスト", () => {
         birthday: "20011015",
       };
       const res = await request.post("/api/customers/login").send(customerData);
-      const expected = {
-        customerID: {
-          id: 1,
-        },
-      };
+      const expected = { id: 1 };
       res.should.have.status(200);
       res.should.be.json;
       JSON.parse(res.text).should.deep.equal(expected);
@@ -178,21 +176,35 @@ describe("serverのテスト", () => {
   describe("GET /api/kartes/id", () => {
     it("should return karte by id", async () => {
       const res = await request.get("/api/kartes/1");
-      const expected = [
-        {
-          id: 1,
-          customer_id: 1,
-          stylist_id: 1,
-          treatment_day: "2024-02-14T15:00:00.000Z",
-          order: "丸みを残したショートボブ",
-          memo1: "前髪にこだわりがあるようだ",
-          memo2: null,
-          memo3: null,
-          memo4: null,
-          memo5: null,
-          photo: null,
-        },
-      ];
+      const expected = {
+        id: 1,
+        customer_id: 1,
+        stylist_id: 1,
+        treatment_day: "2024-02-14T15:00:00.000Z",
+        order: "丸みを残したショートボブ",
+        memo1: "前髪にこだわりがあるようだ",
+        memo2: null,
+        memo3: null,
+        memo4: null,
+        memo5: null,
+        photo: null,
+        treatmented: [
+          {
+            id: 1,
+            name: "カット",
+          },
+        ],
+        interesting: [
+          {
+            id: 8,
+            name: "ヘッドスパ(30分)＋カット",
+          },
+          {
+            id: 9,
+            name: "眉カット",
+          },
+        ],
+      };
       res.should.have.status(200);
       res.should.be.json;
       JSON.parse(res.text).should.deep.equal(expected);

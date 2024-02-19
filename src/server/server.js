@@ -11,6 +11,19 @@ const createserver = () => {
   app.use(express.json());
 
   // 「/api/customers」
+  // GET：顧客名（漢字、かな）、idを取得する
+  app.get("/api/customers", async (req, res) => {
+    try {
+      const customerLists = await db
+        .select("id", "name", "kana")
+        .from("customers")
+        .orderBy("id");
+      res.status(200).json(customerLists);
+    } catch {
+      res.status(500).json({ error: "request failed" });
+    }
+  });
+
   // POST：顧客情報を追加する
   app.post("/api/customers", async (req, res) => {
     const postCustomer = req.body;
@@ -190,6 +203,77 @@ const createserver = () => {
         ...snakeCasekarteInfo,
         treatmented: treatmentedInfo,
         interesting: interestingInfo,
+      };
+
+      res.status(200).json(responseObject);
+    } catch {
+      res.status(500).json({ error: "request failed" });
+    }
+  });
+
+  // PUT：カルテidに一致するカルテ情報をリクエストボディの内容で修正
+  app.put("/api/kartes/:id", async (req, res) => {
+    const karteId = req.params.id;
+    const updatedData = req.body;
+
+    try {
+      const updateResult = await db("kartes")
+        .where({ id: karteId })
+        .update(updatedData);
+      if (updateResult === 1) {
+        // 更新対象があった場合
+        res.status(200).json({ message: "Record updated successfully" });
+      } else {
+        // 更新対象がない場合
+        res.status(404).json({ error: "Record not found" });
+      }
+    } catch {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+
+  // 「/api/stylists」
+  // GET：美容師名（漢字、かな）、役職、idを取得する
+  app.get("/api/stylists", async (req, res) => {
+    try {
+      const customerLists = await db
+        .select("id", "name", "kana", "post")
+        .from("stylists")
+        .orderBy("id");
+      res.status(200).json(customerLists);
+    } catch {
+      res.status(500).json({ error: "request failed" });
+    }
+  });
+
+  //「/api/stylists/:id」
+  // GET：美容師idに一致する美容師情報、担当カルテIDと施術日付を取得
+  app.get("/api/stylists/:id", async (req, res) => {
+    const stylistID = req.params.id;
+    try {
+      // stylistsテーブルからの取得
+      const stylistInfo = await db
+        .select("*")
+        .from("stylists")
+        .where({ id: stylistID });
+
+      // スネークケースに変更
+      const snakeCaseStylistInfo = {};
+      for (const key in stylistInfo[0]) {
+        if (Object.prototype.hasOwnProperty.call(stylistInfo[0], key)) {
+          snakeCaseStylistInfo[camelToSnake(key)] = stylistInfo[0][key];
+        }
+      }
+
+      // kartesテーブルからの取得
+      const kartesInfo = await db
+        .select("id", "treatmentDay as treatment_day")
+        .from("kartes")
+        .where({ stylistID });
+
+      const responseObject = {
+        ...snakeCaseStylistInfo,
+        kartes: kartesInfo,
       };
 
       res.status(200).json(responseObject);
