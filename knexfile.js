@@ -8,9 +8,13 @@ module.exports = {
   development: {
     client: "postgresql",
     connection: {
-      database: "salonhub",
+      host: process.env.DB_HOST,
+      database: process.env.DB_PROCESS,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
+      // database: "salonhub",
+      // user: process.env.DB_USER,
+      // password: process.env.DB_PASSWORD,
     },
     pool: {
       min: 2,
