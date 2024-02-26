@@ -32,7 +32,7 @@ const createserver = () => {
   app.get("/api/customers", async (req, res) => {
     try {
       const customerLists = await db
-        .select("id", "name", "kana")
+        .select("id", "name", "kana") // +CardNumber, gender
         .from("customers")
         .orderBy("id");
       res.status(200).json(customerLists);
@@ -206,7 +206,7 @@ const createserver = () => {
     const key = req.body.cardNumber + "_" + yyyymmdd + ".txt";
     const uploadPath = path.join(__dirname, "/upload/");
     const file = uploadPath + key;
-    fs.writeFileSync(file, req.body.image);
+    // fs.writeFileSync(file, req.body.image);
 
     const result = await uploadFile(bucketName, file, key);
 
